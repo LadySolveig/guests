@@ -35,8 +35,24 @@ class ReadOnlyJail extends DirMask {
 		if ($path === 'files') {
 			return true;
 		}
+		
+		if (preg_match('/^files\/Talk\/[a-zA-Z0-9äöüAÖÜß!\h\-\_\(\)\@\.]*\.[a-zA-Z0-9]*$/i', $path)) {
+			return false;
+		}
 
 		return parent::checkPath($path);
+	}
+	
+	/**
+	 * @param string $path
+	 * @return bool
+	 */
+	public function isCreatable($path) {
+		if ($path === 'files/Talk') {
+			return true;
+		}
+
+		return $this->getWrapperStorage()->isCreatable($path);
 	}
 
 
