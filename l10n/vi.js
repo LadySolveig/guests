@@ -10,7 +10,7 @@ OC.L10N.register(
     "Email" : "Thư điện tử",
     "Default" : "Mặc định",
     "Name:" : "Tên:",
-    "Reset" : "Khởi động lại",
+    "Email:" : "Thư điện tử:",
     "Error" : "Lỗi"
 },
 "nplurals=1; plural=0;");

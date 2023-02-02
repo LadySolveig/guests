@@ -1,9 +1,10 @@
 <template>
-	<Modal v-if="isOpened"
+	<NcModal v-if="isOpened"
 		id="app-guests"
 		:clear-view-delay="0"
 		:title="formatTitle"
 		@close="closeModal">
+		<!-- Main guest form -->
 		<div class="guest_model_content">
 			<form @submit.prevent="addGuest">
 				<div class="modal-body">
@@ -11,8 +12,7 @@
 						<label class="form-label" for="app-guests-input-name">
 							{{ t('guests', 'Name:') }}
 						</label>
-						<input
-							id="app-guests-input-name"
+						<input id="app-guests-input-name"
 							ref="name"
 							v-model="guest.fullName"
 							class="form-input"
@@ -23,8 +23,7 @@
 						<label class="form-label" for="app-guests-input-email">
 							{{ t('guests', 'Email:') }}
 						</label>
-						<input
-							id="app-guests-input-email"
+						<input id="app-guests-input-email"
 							ref="email"
 							v-model="guest.email"
 							class="form-input"
@@ -50,36 +49,47 @@
 						<span v-if="error.groups">{{ error.groups }}</span>
 					</div>
 				</div>
+
+				<!-- Footer -->
 				<div class="modal-footer">
-					<span v-if="error.button">{{ t('guests', 'An error occured, try again') }}</span>
-					<button type="submit"
-						:class="{ 'icon-loading-small': loading }"
-						class="primary button-save"
+					<span v-if="error.button">{{ t('guests', 'An error occurred, try again') }}</span>
+					<NcButton type="primary"
+						native-type="submit"
 						:disabled="loading">
-						{{ t('guests', 'Invite user and create share') }}
-					</button>
+						<template #icon>
+							<AccountPlus v-if="!loading" :size="20" />
+							<div v-else class="icon-loading-small" />
+						</template>
+						{{ submitLabel }}
+					</NcButton>
 				</div>
 			</form>
 		</div>
-	</Modal>
+	</NcModal>
 </template>
 
 <script>
 import { generateOcsUrl } from '@nextcloud/router'
-import Modal from '@nextcloud/vue/dist/Components/Modal'
+import AccountPlus from 'vue-material-design-icons/AccountPlus.vue'
 import axios from '@nextcloud/axios'
-import LanguageSelect from '../components/LanguageSelect'
-import GroupSelect from '../components/GroupSelect'
+import NcButton from '@nextcloud/vue/dist/Components/NcButton.js'
+import NcModal from '@nextcloud/vue/dist/Components/NcModal.js'
+
+import GroupSelect from '../components/GroupSelect.vue'
+import LanguageSelect from '../components/LanguageSelect.vue'
 
 export default {
 	name: 'GuestForm',
 	components: {
+		AccountPlus,
+		NcButton,
 		GroupSelect,
 		LanguageSelect,
-		Modal,
+		NcModal,
 	},
 	data() {
 		return {
+			integrationApp: null,
 			fileInfo: null,
 			resolve: () => {},
 			reject: () => {},
@@ -116,6 +126,13 @@ export default {
 					: this.guest.email,
 			})
 		},
+
+		submitLabel() {
+			if (this.integrationApp === 'talk') {
+				return t('guests', 'Invite user to conversation')
+			}
+			return t('guests', 'Invite user and create share')
+		},
 	},
 
 	watch: {
@@ -137,7 +154,7 @@ export default {
 	},
 
 	methods: {
-		populate(fileInfo, shareWith) {
+		populate(metaData, shareWith) {
 			if (
 				shareWith.indexOf('@') !== -1
 				&& shareWith.lastIndexOf('.') > shareWith.indexOf('@')
@@ -147,7 +164,8 @@ export default {
 				this.guest.fullName = shareWith || ''
 			}
 
-			this.fileInfo = fileInfo
+			this.integrationApp = metaData?.app || 'files'
+			this.fileInfo = metaData
 			this.openModal()
 
 			return new Promise((resolve, reject) => {
@@ -188,6 +206,16 @@ export default {
 					language: this.guest.language,
 					groups: this.guest.groups,
 				})
+
+				if (this.integrationApp === 'talk') {
+					this.loading = false
+					this.resolve({
+						id: this.guest.email,
+						source: 'users',
+					})
+					this.closeModal()
+					return
+				}
 				await this.addGuestShare()
 			} catch ({ response }) {
 				const error = response && response.data && response.data.ocs && response.data.ocs.data
@@ -273,10 +301,6 @@ export default {
 			border: 1px solid var(--color-error);
 			color: var(--color-error);
 		}
-	}
-
-	.vs__dropdown-menu {
-		z-index: 99999;
 	}
 
 	.modal-footer {

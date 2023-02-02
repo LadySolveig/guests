@@ -29,18 +29,11 @@
     "Email:" : "Email:",
     "Language:" : "Idioma:",
     "Add guest to groups:" : "Adicionar convidado aos grupos:",
-    "An error occured, try again" : "Ocorreu um erro. Tente de novo",
-    "Invite user and create share" : "Convidar utilizador e criar partilha",
     "Invite {name}" : "Convidar {name}",
-    "Guest users are grouped under a virtual group in the user manager" : "Utilizadores convidados são agrupados num grupo virtual no gestor de utilizadores",
-    "Guest users can access mounted external storages" : "Os convidados podem aceder a armazenamento externo montado",
-    "Hide other users from guests" : "Ocultar outros utilizadores dos convidados",
-    "Guests will still be able to see users from any group they are added to" : "Os convidados continuam a poder ver utilizadores pertencentes ao grupo a que foram adicionados",
-    "Limit guest access to an app whitelist" : "Limitar acesso de convidados a uma lista de aplicações seguras",
-    "Reset" : "Repor",
+    "Invite user and create share" : "Convidar utilizador e criar partilha",
     "Error" : "Erro",
     "Your settings have been updated" : "As suas definições foram atualizadas",
     "Saving …" : "A guardar ...",
     "Invite guest" : "Convidar convidado"
-},"pluralForm" :"nplurals=2; plural=(n != 1);"
+},"pluralForm" :"nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;"
 }

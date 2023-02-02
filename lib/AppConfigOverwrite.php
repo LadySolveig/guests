@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace OCA\Guests;
 
 use OC\AppConfig;
-use OC\DB\Connection;
+use OC\DB\ConnectionAdapter;
 
 class AppConfigOverwrite extends AppConfig {
 
@@ -32,10 +32,10 @@ class AppConfigOverwrite extends AppConfig {
 	private $overWrite;
 
 	public function __construct(
-		Connection $conn,
+		ConnectionAdapter $conn,
 		array $overWrite
 	) {
-		parent::__construct($conn);
+		parent::__construct($conn->getInner());
 		$this->overWrite = $overWrite;
 	}
 
